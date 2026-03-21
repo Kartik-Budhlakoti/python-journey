@@ -1,39 +1,60 @@
-import pyperclip , re
-pyperclip.copy('''Hey Kartik! 
-Call me @ 415-555-4242 or (415) 555-4242 x123 tomorrow? 
-Also reach support@cybersec.com or kartik@devops.in 
-My other number 415.555.4242 too! 
-www.google.com doesn't count :)''')
-phone_re = re.compile(r'''(
-    (\d{3}|\(\d{3}\))?
-    (\s|-|\.)?
-    (\d{3})
-    (\s|-|\.)
-    (\d{4})
-    (\s*(ext|x|ext\.)\s*(\d{2,5}))?
-    )''', re.VERBOSE)
+# import pyperclip , re
+# pyperclip.copy('''Hey Kartik! 
+# Call me @ 415-555-4242 or (415) 555-4242 x123 tomorrow? 
+# Also reach support@cybersec.com or kartik@devops.in 
+# My other number 415.555.4242 too! 
+# www.google.com doesn't count :)''')
+# phone_re = re.compile(r'''(
+#     (\d{3}|\(\d{3}\))?
+#     (\s|-|\.)?
+#     (\d{3})
+#     (\s|-|\.)
+#     (\d{4})
+#     (\s*(ext|x|ext\.)\s*(\d{2,5}))?
+#     )''', re.VERBOSE)
 
-email_re = re.compile(r'''(
-                      [a-zA-Z0-9._%+-]+
-                      @  # @ symbol
-                      [a-zA-Z0-9.-]+
-                      (\.[a-zA-Z]{2,4})
-                      )''', re.VERBOSE)
+# email_re = re.compile(r'''(
+#                       [a-zA-Z0-9._%+-]+
+#                       @  # @ symbol
+#                       [a-zA-Z0-9.-]+
+#                       (\.[a-zA-Z]{2,4})
+#                       )''', re.VERBOSE)
 
-text = str(pyperclip.paste())
+# text = str(pyperclip.paste())
 
-matches = []
-for groups in phone_re.findall(text):
-    phone_num = '-'.join([groups[1], groups[3], groups[5]])
-    if groups[6] != '':
-        phone_num += ' x' + groups[6]
-    matches.append(phone_num)
-for groups in email_re.findall(text):
-    matches.append(groups[0])
+# matches = []
+# for groups in phone_re.findall(text):
+#     phone_num = '-'.join([groups[1], groups[3], groups[5]])
+#     if groups[6] != '':
+#         phone_num += ' x' + groups[6]
+#     matches.append(phone_num)
+# for groups in email_re.findall(text):
+#     matches.append(groups[0])
 
-if len(matches) > 0:
-    pyperclip.copy('\n'.join(matches))
-    print('Copied to clipboard:')
-    print('\n'.join(matches))
-else:
-    print('No phone numbers or email addresses found.')
+# if len(matches) > 0:
+#     pyperclip.copy('\n'.join(matches))
+#     print('Copied to clipboard:')
+#     print('\n'.join(matches))
+# else:
+#     print('No phone numbers or email addresses found.')
+
+import re
+from humre import *
+phone_regex = group(
+    optional_group(either(exactly(3, DIGIT),
+                   OPEN_PAREN + exactly(3, DIGIT) + CLOSE_PAREN)),
+    optional(group_either(WHITESPACE, '-', PERIOD)),
+    group(exactly(3, DIGIT)),
+    group_either(WHITESPACE, '-', PERIOD),
+    group(exactly(4, DIGIT)),
+    optional_group(
+        zero_or_more(WHITESPACE),
+        group_either('ext', 'x', r'ext\.'),
+        zero_or_more(WHITESPACE),
+        group(between(2, 5, DIGIT))
+    )
+)
+    
+pattern = re.compile(phone_regex)
+match = pattern.search('My number is 415-555-4242.')
+print(match.group())
