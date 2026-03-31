@@ -40,29 +40,62 @@
 # jack.speak('meow')  
 # print(miles)   
 
-class Dog:
-    species = 'Canis familiaris'
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
+# class Dog:
+#     species = 'Canis familiaris'
+#     def __init__(self, name, age):
+#         self.name = name
+#         self.age = age
+#     def __str__(self):
+#         return f'{self.name} is {self.age} years old'
+#     def speak(self, sound):
+#         return f'{self.name} says {sound}'
+# class JackRussellTerrier(Dog):
+#     pass
+
+# class Dachshund(Dog):
+#     pass
+
+# class Bulldog(Dog):
+#     pass
+# miles = JackRussellTerrier('Miles', 4)
+# buddy = Dachshund('Buddy', 9)
+# jack = Bulldog('Jack', 3)
+# jim = Bulldog('Jim', 5)
+# print(miles.species)
+# print(buddy.name)
+# print(jack)
+# jim.speak('woof')
+# print(type(miles))
+
+class Student:
+    def __init__(self,name,sub1,sub2,sub3):
+        self.name = name 
+        self.sub1 = sub1
+        self.sub2 = sub2
+        self.sub3 = sub3
+
+    @staticmethod
+    def college():
+        print('yo! student from BIAS')
+
+    def avg(self):
+        avg = (self.sub1+self.sub2+self.sub3)/3  
+        return avg  
     def __str__(self):
-        return f'{self.name} is {self.age} years old'
-    def speak(self, sound):
-        return f'{self.name} says {sound}'
-class JackRussellTerrier(Dog):
-    pass
+        return f'{self.name} has an average of {self.avg()}'
 
-class Dachshund(Dog):
-    pass
+s1 = Student('Kartik Budhlakoti' , 60,60,60)
+print(s1)
+Student.college()
+# del s1
+# print(s1)
 
-class Bulldog(Dog):
-    pass
-miles = JackRussellTerrier('Miles', 4)
-buddy = Dachshund('Buddy', 9)
-jack = Bulldog('Jack', 3)
-jim = Bulldog('Jim', 5)
-print(miles.species)
-print(buddy.name)
-print(jack)
-jim.speak('woof')
-print(type(miles))
+class Person:
+    # __name = 'anonymous'
+
+    def __hello(self):
+        print(f'Hello Person!!')
+    def welcome(self):
+        self.__hello()
+p1= Person()
+print(p1.welcome())
