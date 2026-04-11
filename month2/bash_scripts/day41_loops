@@ -1,0 +1,58 @@
+# !/bin/bash
+
+echo "Enter the age : "
+read age
+# if else statements
+if [ $age -gt 18 ]; then
+    echo "Adult"
+elif [ $age -eq 18 ]; then
+    echo "Just turned adult"
+else
+    echo "You are just a child"
+fi
+
+# String comparision
+echo "Enter the name : "
+read name
+# name='kartik'
+if [ "$name" = "kartik" ]; then
+    echo "Hello kartik"
+fi
+
+file and directory checks
+file="/home/kartik007/Desktop/python-new/python-journey/README.md"
+directory="/home/kartik007/Desktop/python-new/python-journey"
+#    -f to represent file
+if [ -f "$file" ]; then
+    echo "File exists : $file"
+fi
+#     similarly -d for directory
+if [ -d "$directory" ]; then
+    echo "Directory exists : $directory"
+fi
+# check if the condition inside [ ] comes true or not
+if [ ! -f "/nonexistant/file.txt" ]; then
+    echo "File does not exist - handling"
+fi
+
+
+#      -z for checking the variable
+empty_vars=""
+if [ -z "$empty_vars" ]; then
+    echo "Variable is empty"
+fi
+
+#     -n if the var is non empty
+not_empty="kartik"
+if [ -n "$not_empty" ]; then
+    echo "Variable has content: $not_empty"
+fi
+
+backup_dir="/home/kartik007/Desktop/python-new/python-journey/backups"
+if [ ! -d "$backup_dir" ]; then
+    mkdir -p "$backup_dir"     #      -p(parents) for making the directory resursive with the parents
+    echo "Directory didn't exist already, so created : $backuo_dir"
+else 
+    echo "Directory already exists ..."
+fi
+
