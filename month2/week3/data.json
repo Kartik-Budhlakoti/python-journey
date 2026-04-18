@@ -1,0 +1,17 @@
+{
+    "name": "kartik",
+    "age": 20,
+    "skills": [
+        "Python",
+        "Linux",
+        "Bash"
+    ],
+    "scores": {
+        "python": 85,
+        "linux": 70,
+        "bash": 65
+    },
+    "active": true,
+    "gpa": 6.2,
+    "nickname": null
+}
