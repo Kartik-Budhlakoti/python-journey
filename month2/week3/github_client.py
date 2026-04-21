@@ -32,7 +32,7 @@ def safe_get(url , params=None, headers= None):
         return None
     
 def get_user_profile(username):
-    url = f"BASE_URL/users/{username}"
+    url = f"{BASE_URL}/users/{username}"
     response = safe_get(url, headers=HEADERS)
     if not response:
         return None
@@ -48,3 +48,89 @@ def get_user_profile(username):
         'profile_url':user['profile_url'],
         'created_at':user['created_at']
     }
+def get_repositories(username):
+    url = f"{BASE_URL}/users/{username}/repos"
+    response = safe_get(url, headers=HEADERS,
+                        params={'sort':'updated', 'per_page':'100'})
+    if not response:
+        return []
+    repos = response.json()
+    clean_repos = []
+    for repo in repos:
+        clean_repos.append({
+            'name': repo['name'],
+            'description':repo.get('description') or 'No description',
+            'language': repo.get('language') or 'Not specified',
+            'stars': repo['startgazers_count'],
+            'forks': repo['forks_count'],
+            'updated_at': repo['updated_at'],
+            'url': repo['html_url'],
+            'is_fork':repo['fork']
+        })
+        return clean_repos
+
+def get_recent_commit(username, repo_name, count=5):
+    url = f"{BASE_URL}/repos/{username}/{repo_name}/commits"
+    response = safe_get(
+        url,
+        headers=HEADERS,
+        params={'per_page':count}
+    )
+    if not response:
+        return []
+    
+    commits = response.json()
+
+    # Checking if the output response is actually a list or not  -------------------------------------
+    # error that github gives as a dictionary instead of list  ---------------------
+    if not isinstance(commits, list):
+        return []
+
+    clean_commits = []
+    for commit in commits:
+        clean_commits.append({
+            #   first 7 chars of commit hash
+            'sha': commit['sha'][:7],
+            #  1st line only
+            'message': commit['commit']['message'].split('\n')[0],
+            'author':commit['commit']['author']['name'],
+            'date':commit['commit']['author']['date']
+        })
+        
+    return clean_commits
+def display_profile(profile):
+    if not profile:
+        print(f"Could not load profile")
+        return 
+    print(f"=" *50)
+    print('Github Profile---')
+    print('='*50)
+    print(f"Username : {profile['username']}")
+    print(f"Name : {profile['name']}")
+    print(f"Bio : {profile['bio']}")
+    print(f"Location : {profile['location']}")
+    print(f"Repos : {profile['public_repos']}")
+    print(f"Followers : {profile['followers']}")
+    print(f"Following : {profile['following']}")
+    print(f"Url : {profile['profile_url']}")
+
+def display_repositories(repos):
+    if not repos:
+        print(f"No repos were found")
+        return 
+    print(f"="*50)
+    print(f"Repositories : {len(repos)} total")
+    print("="*50)
+
+    original = [r for r in repos if not r['is_fork']]
+    forks = [r for r in repos if r['is_fork']]    
+
+    print(f"Original : {len(original)} | Forks : {len(forks)}")
+    print()
+
+    for repo in repos[:10]:#   for first 10 repos
+        fork_label = " [FORK]" if repo['is_fork'] else ""
+        print(f"  {repo['name']}{fork_label}")
+        print(f"   {repo['description']}")
+        print(f"    Language : {repo['language']} | Starts : {repo['stars']}")
+        print()
