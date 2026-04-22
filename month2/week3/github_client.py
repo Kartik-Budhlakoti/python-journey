@@ -40,12 +40,12 @@ def get_user_profile(username):
     return  {
         'username' : user['login'],
         'name':user.get('name') or 'Not set',
-        'bio': user.get['bio'] or 'No bio',
-        'location':user.get['location'] or 'Not set',
+        'bio': user.get('bio') or 'No bio',
+        'location':user.get('location') or 'Not set',
         'public_repos':user['public_repos'],
         'followers':user['followers'],
         'following':user['following'],
-        'profile_url':user['profile_url'],
+        'profile_url':user['html_url'],
         'created_at':user['created_at']
     }
 def get_repositories(username):
@@ -61,7 +61,7 @@ def get_repositories(username):
             'name': repo['name'],
             'description':repo.get('description') or 'No description',
             'language': repo.get('language') or 'Not specified',
-            'stars': repo['startgazers_count'],
+            'stars': repo['stargazers_count'],
             'forks': repo['forks_count'],
             'updated_at': repo['updated_at'],
             'url': repo['html_url'],
@@ -134,3 +134,55 @@ def display_repositories(repos):
         print(f"   {repo['description']}")
         print(f"    Language : {repo['language']} | Starts : {repo['stars']}")
         print()
+
+def display_commits(commits, repo_name):
+    if not commits:
+        print("No commits to display for {repo_name}")
+        return 
+    print(f"="*50)
+    print(f"Latest commits for : {repo_name}")
+    print("="*50)
+    for commit in commits:
+        print(f"    [{commit['sha']}] {commit['message']}")
+        print(f"        by {commit['author']} on {commit['date'][:10]}")
+        print()
+def save_data(profile, repos, output_dir):
+    output_path = Path(output_dir)
+    output_path.mkdir(exist_ok=True, parents=True)
+
+    timestamp = datetime.datetime.now().strftime('%Y:%m:%d_%H:%M:%S')
+
+    #save profile
+    profile_file = output_path / f"profile_{timestamp}.json"
+    profile_file.write_text(json.dumps(profile, indent=4))
+    print(f" Profile Information saved in : {profile_file}")
+
+    #save repos
+    repos_file = output_path / f"repos_{timestamp}.json"
+    repos_file.write_text(json.dumps(repos, indent= 4))
+    print(f" Repositories Information saved in  : {repos_file}")
+    return str(profile_file) ,str(repos_file)
+
+def main():
+    username= "Kartik-Budhlakoti"
+    output_dir = "/home/kartik007/Desktop/python-new/python-journey/month2/week3/github_data"
+
+    profile = get_user_profile(username)
+    display_profile(profile)
+
+    repos = get_repositories(username)
+    display_repositories(repos)
+
+    if repos:
+        most_recent_repo = repos[0]['name']
+        commits = get_recent_commit(username, most_recent_repo , count=5)
+        display_commits(commits, most_recent_repo)
+
+    # now saving everything
+    if profile and repos:
+        save_data(profile, repos, output_dir)
+
+    print("------     DONE     ------")
+
+if __name__ == "__main__":
+    main()
