@@ -1,0 +1,8 @@
+certifi==2026.2.25
+charset-normalizer==3.4.7
+Humre==1.0.0
+idna==3.11
+pyperclip==1.11.0
+requests==2.33.1
+Send2Trash==2.1.0
+urllib3==2.6.3
