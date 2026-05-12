@@ -41,3 +41,28 @@ python system_health_v2.py --checks disk memory --output report.txt --verbose --
 - Custom exceptions for meaningful error messages
 - OOP design — separating concerns into classes
 - Combining all month 2 skills into one tool
+
+## Running with Docker
+
+Build the image:
+```bash
+docker build -t system-health-reporter:v2 .
+```
+
+Run with default checks:
+```bash
+docker run system-health-reporter:v2
+```
+
+Save report to your machine:
+```bash
+docker run -v $(pwd)/reports:/app/reports system-health-reporter:v2
+```
+
+Run specific checks:
+```bash
+docker run system-health-reporter:v2 \
+  python system_health_v2.py \
+  --output /app/reports/report.txt \
+  --checks disk memory network
+```
